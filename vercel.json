@@ -1,6 +1,16 @@
 {
     "routes": [
-      { "src": "/api/.*", "dest": "/api" },
-      { "src": "/(.*)", "dest": "/index.html" }
+        { "src": "/api/.*", "dest": "/api" },
+        { "src": "/(.*)", "dest": "/index.html" }
+    ],
+    "crons": [
+        {
+            "path": "/api/check-deadlines/9100",
+            "schedule": "00 7 * * 1-5"
+        },
+        {
+            "path": "/api/check-deadlines/9103",
+            "schedule": "00 7 * * 1-5"
+        }
     ]
-  }
+}

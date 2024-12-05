@@ -1,42 +1,32 @@
-let confirmations = []; // Lokální paměť pro uložení potvrzení
+import { kv } from "@vercel/kv";
 
-export default function handler(req, res) {
-    const { method, query } = req;
+const allowedLineIds = ["9100", "9103"]; // Povolené ID linek
 
-        // Preflight request
-    if (method === "OPTIONS") {
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-        return res.status(200).end();
+export default async function handler(req, res) {
+    // Nastavení CORS pro konkrétní doménu
+    res.setHeader("Access-Control-Allow-Origin", "http://alive.truckit.cz");
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+    if (req.method === "OPTIONS") {
+        return res.status(200).end(); // Odpověď na preflight request
     }
+    if (req.method === "POST") {
+        const { lineId } = req.body;
 
-    // Endpoint pro ukládání potvrzení (např. /api/handler?type=confirm)
-    if (query.type === "confirm" && method === "POST") {
-        const { employeeId, timestamp } = req.body;
-        confirmations.push({ employeeId, timestamp });
-        res.status(200).json({ message: "Confirmation received" });
-    }
+        // Validace lineId
+        if (!allowedLineIds.includes(lineId)) {
+            return res.status(400).json({ error: `Invalid lineId: ${lineId}` });
+        }
 
-    // Endpoint pro kontrolu opožděných potvrzení (např. /api/handler?type=check-late)
-    else if (query.type === "check-late" && method === "GET") {
         const now = new Date();
-        const lateConfirmations = confirmations.filter(entry => {
-            const clickTime = new Date(entry.timestamp);
-            return now - clickTime > 3600000; // 1 hodina zpoždění
-        });
+        const localTime = now.toLocaleString("cs-CZ", { timeZone: "Europe/Prague" });
 
-        // Logika pro odeslání upozornění (nyní jen log do konzole)
-        lateConfirmations.forEach(entry => {
-            console.log(`Zaměstnanec ${entry.employeeId} nepotvrdil přítomnost včas!`);
-            // Zde integrace s Twilio nebo jiným API pro notifikaci
-        });
+        // Uložení potvrzení do KV Database
+        await kv.set(`confirmation:${lineId}`, localTime);
 
-        res.status(200).json({ message: "Late confirmations processed" });
+        return res.status(200).json({ message: `Confirmation received for lineId: ${lineId}` });
     }
 
-    // Metoda nebo typ neodpovídá
-    else {
-        res.status(405).json({ error: "Method Not Allowed or Invalid Type" });
-    }
+    res.status(405).json({ error: "Method Not Allowed" });
 }
