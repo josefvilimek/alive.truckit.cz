@@ -3,6 +3,14 @@ let confirmations = []; // Lokální paměť pro uložení potvrzení
 export default function handler(req, res) {
     const { method, query } = req;
 
+        // Preflight request
+    if (method === "OPTIONS") {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        return res.status(200).end();
+    }
+
     // Endpoint pro ukládání potvrzení (např. /api/handler?type=confirm)
     if (query.type === "confirm" && method === "POST") {
         const { employeeId, timestamp } = req.body;
