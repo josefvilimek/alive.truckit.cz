@@ -1,12 +1,9 @@
 import { kv } from "@vercel/kv";
 import twilio from "twilio";
 
-// ENV variables from Vercelo
+// ENV variables from Vercel
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
-const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
-const destinationPhoneNumber = process.env.DESTINATION_PHONE_NUMBER;
-
 const client = twilio(accountSid, authToken);
 
 export default async function handler(req, res) {   
@@ -20,25 +17,33 @@ export default async function handler(req, res) {
 
     if (!confirmationTime) {
         console.log(`Line ${lineId} missed the confirmation! Sending SMS.`);
-        sendSMS(lineId);
-
+        await sendSMS(lineId); 
         return res.status(200).json({ message: `Line ${lineId} missed the confirmation. SMS and call were sent.` });
     }
 
     return res.status(200).json({ message: `Line ${lineId} confirmed at ${confirmationTime}.` });
 }
 
-function sendSMS(lineId) {
+async function sendSMS(lineId) {
     const phoneNumbers = process.env.DESTINATION_PHONE_NUMBERS.split(",");
+    console.log(`Starting SMS sending process for line ${lineId}...`);
 
-    phoneNumbers.forEach((phoneNumber) => {
-        client.messages
-            .create({
+    for (const phoneNumber of phoneNumbers) {
+        try {
+            console.log(`Sending SMS to ${phoneNumber} for line ${lineId}...`);
+            const message = await client.messages.create({
                 body: `Linka ${lineId} nepotvrdila odjezd!`,
                 from: "TRUCKIT",
                 to: phoneNumber,
-            })
-            .then((message) => console.log(`SMS sent to ${phoneNumber}: ${message.sid}`))
-            .catch((error) => console.error(`Error sending SMS to ${phoneNumber}:`, error));
-    });
+            });
+            console.log(`SMS successfully sent to ${phoneNumber}: SID ${message.sid}`);
+        } catch (error) {
+            console.error(`Error sending SMS to ${phoneNumber} for line ${lineId}:`, error.message);
+        }
+
+        console.log(`Waiting 650 miliseconds before processing the next phone number...`);
+        await new Promise((resolve) => setTimeout(resolve, 650));
+    }
+
+    console.log(`Finished SMS sending process for line ${lineId}`);
 }

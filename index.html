@@ -4,102 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Potvrzení přítomnosti</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #121212;
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-        }
-
-        h1 {
-            margin-bottom: 20px;
-            font-size: 24px;
-        }
-
-        label {
-            font-size: 18px;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        input {
-            width: 80%;
-            max-width: 300px;
-            padding: 10px;
-            margin-bottom: 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
-        }
-
-        button {
-            width: 80%;
-            max-width: 300px;
-            padding: 10px;
-            font-size: 18px;
-            color: #121212;
-            background-color: #ffffff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #cccccc;
-        }
-
-        button:active {
-            background-color: #aaaaaa;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>Potvrzuji odjezd na trasu</h1>
-    
-    <label for="lineId">Zadejte ID trasy</label>
-    <input type="text" id="lineId" placeholder="">
-    <button id="confirmBtn">Potvrzuji</button>
-
-    <script>
-        const allowedLineIds = ["9100", "9103"]; // Povolené ID linek
-
-        document.getElementById("confirmBtn").addEventListener("click", async (event) => {
-            const lineId = document.getElementById("lineId").value.trim();
-
-            // Validace lineId
-            if (!allowedLineIds.includes(lineId)) {
-                alert(`ID trasy ${lineId} není povoleno.`);
-                return; // Zastavíme funkci před odesláním požadavku
-            }
-
-            try {
-                const response = await fetch("https://alive-truckit-cz.vercel.app/api/handler", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ lineId }),
-                });
-
-                if (response.ok) {
-                    alert("Vaše přítomnost byla potvrzena!");
-                } else {
-                    const data = await response.json();
-                    alert(`Chyba: ${data.error || "Neznámá chyba"}`);
-                }
-            } catch (error) {
-                alert("Chyba při potvrzení. Zkuste to znovu.");
-                console.error(error);
-            }
-        });
-    </script>
+    <div class="form-group">
+        <input type="text" id="lineId" placeholder="ID trasy">
+        <button id="confirmBtn" disabled>Potvrzuji</button>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
