@@ -1,16 +1,27 @@
 import { kv } from "@vercel/kv";
 
 const allowedLineIds = ["9100", "9103"]; // Povolené ID linek
+const allowedOrigins = ["http://alive.truckit.cz", "https://alive.truckit.cz"]; // Povolené domény
 
 export default async function handler(req, res) {
+
+    const origin = req.headers.origin || req.headers.referer;
+
+    // Kontrola, jestli je origin povolen
+    if (!allowedOrigins.includes(origin)) {
+        return res.status(403).json({ error: "Forbidden: Invalid origin" });
+    }
+
     // Nastavení CORS pro konkrétní doménu
-    res.setHeader("Access-Control-Allow-Origin", "http://alive.truckit.cz");
+    res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
+    // Odpověď na preflight request
     if (req.method === "OPTIONS") {
-        return res.status(200).end(); // Odpověď na preflight request
+        return res.status(200).end();
     }
+
     if (req.method === "POST") {
         const { lineId } = req.body;
 

@@ -7,6 +7,12 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = twilio(accountSid, authToken);
 
 export default async function handler(req, res) {   
+    // Ověření API klíče
+    const apiKey = req.headers["x-api-key"];
+    if (!apiKey || apiKey !== process.env.CRON_API_KEY) {
+        return res.status(403).json({ error: "Forbidden: Invalid API key" });
+    }
+
     const { lineId } = req.query;
 
     if (!lineId) {
@@ -41,7 +47,7 @@ async function sendSMS(lineId) {
             console.error(`Error sending SMS to ${phoneNumber} for line ${lineId}:`, error.message);
         }
 
-        console.log(`Waiting 650 miliseconds before processing the next phone number...`);
+        console.log(`Waiting 650 milliseconds before processing the next phone number...`);
         await new Promise((resolve) => setTimeout(resolve, 650));
     }
 
