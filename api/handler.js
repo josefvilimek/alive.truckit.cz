@@ -4,7 +4,6 @@ const allowedLineIds = ["9100", "9103"]; // Povolené ID linek
 const allowedOrigins = ["http://alive.truckit.cz", "https://alive.truckit.cz"]; // Povolené domény
 
 export default async function handler(req, res) {
-
     const origin = req.headers.origin || req.headers.referer;
 
     // Kontrola, jestli je origin povolen
@@ -23,18 +22,23 @@ export default async function handler(req, res) {
     }
 
     if (req.method === "POST") {
-        const { lineId } = req.body;
+        const { lineId, pin } = req.body;
 
         // Validace lineId
         if (!allowedLineIds.includes(lineId)) {
-            return res.status(400).json({ error: `Invalid lineId: ${lineId}` });
+            return res.status(400).json({ error: `Neexistující linka: ${lineId}` });
+        }
+
+        // Validace PINu
+        if (pin !== process.env.USER_PIN) {
+            return res.status(401).json({ error: "Neautorizováno: špatný PIN" });
         }
 
         const now = new Date();
         const localTime = now.toLocaleString("cs-CZ", { timeZone: "Europe/Prague" });
 
         // Uložení potvrzení do KV Database
-        await kv.set(`confirmation:${lineId}`, localTime);
+        await kv.set(`Line:${lineId}`, localTime);
 
         return res.status(200).json({ message: `Confirmation received for lineId: ${lineId}` });
     }

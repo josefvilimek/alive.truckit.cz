@@ -14,7 +14,7 @@ body {
 
 h1 {
     margin-bottom: 20px;
-    font-size: 24px;
+    font-size: 22px;
 }
 
 .form-group {
@@ -26,12 +26,16 @@ h1 {
 
 input {
     text-align: center;
-    width: 120px;
+    width: 90px;
     padding: 10px;
     font-size: 16px;
     border: none;
     border-radius: 5px;
     box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.pin-input {
+    width: 40px;
 }
 
 button {
@@ -56,4 +60,29 @@ button:active {
 button:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
+}
+
+/* Styl pro zobrazení aktuálního data a času */
+.datetime {
+    font-size: 16px;
+    color: #f0f0f0;
+    margin-top: 20px;
+    font-weight: 400;
+}
+
+/* Styl pro patičku */
+.footer {
+    position: absolute;
+    bottom: 20px;
+    font-size: 14px;
+}
+
+.footer a {
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer a:hover {
+    color: #cccccc;
 }

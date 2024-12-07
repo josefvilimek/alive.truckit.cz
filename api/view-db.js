@@ -36,7 +36,7 @@ export default async function handler(req, res) {
                         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
                     }
                     input[type="text"], input[type="password"] {
-                        width: 100%;
+                        width: 80%;
                         padding: 10px;
                         margin: 10px 0;
                         border: 1px solid #ccc;

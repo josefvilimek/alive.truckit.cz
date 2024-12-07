@@ -4,32 +4,59 @@ const allowedLineIds = ["9100", "9103"];
 // Funkce pro načtení parametru z URL
 function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param); // Načte hodnotu parametru, např. "id"
+    return urlParams.get(param);
 }
 
 // Načtení parametru "id" z URL a předvyplnění formuláře
 document.addEventListener("DOMContentLoaded", () => {
-    const idFromUrl = getQueryParam("id"); // Načítá "id" z URL
+    const idFromUrl = getQueryParam("id");
+    const pinFromUrl = getQueryParam("pin");
+
     const lineIdInput = document.getElementById("lineId");
+    const pinInput = document.getElementById("pin");
     const confirmBtn = document.getElementById("confirmBtn");
 
     if (idFromUrl) {
-        lineIdInput.value = idFromUrl.trim(); // Předvyplnění formuláře
-        confirmBtn.disabled = idFromUrl.trim() === ""; // Deaktivace tlačítka, pokud je hodnota prázdná
+        lineIdInput.value = idFromUrl.trim();
+        confirmBtn.disabled = idFromUrl.trim() === "";
+    }
+
+    if (pinFromUrl) {
+        pinInput.value = pinFromUrl.trim();
     }
 
     // Povolení tlačítka při zadání validní hodnoty
     lineIdInput.addEventListener("input", (event) => {
         const lineId = event.target.value.trim();
-        confirmBtn.disabled = lineId === ""; // Deaktivace tlačítka pro prázdný vstup
+        confirmBtn.disabled = lineId === "";
     });
+
+    // Funkce pro aktualizaci data a času
+    function updateDateTime() {
+        const now = new Date();
+        const formattedDateTime = now.toLocaleString("cs-CZ", {
+            year: "numeric",
+            month: "numeric",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+        });
+        document.getElementById("datetime").textContent = formattedDateTime;
+    }
+
+    // Aktualizace času každou sekundu
+    setInterval(updateDateTime, 1000);
+
+    // Inicializace při načtení stránky
+    updateDateTime();
 });
 
 // Obsluha odeslání potvrzení
 document.getElementById("confirmBtn").addEventListener("click", async () => {
     const lineId = document.getElementById("lineId").value.trim();
+    const pin = document.getElementById("pin").value.trim();
 
-    // Validace lineId
     if (!allowedLineIds.includes(lineId)) {
         alert(`ID trasy ${lineId} není povoleno.`);
         return;
@@ -39,7 +66,7 @@ document.getElementById("confirmBtn").addEventListener("click", async () => {
         const response = await fetch("https://alive-truckit-cz.vercel.app/api/handler", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ lineId }),
+            body: JSON.stringify({ lineId, pin }),
         });
 
         if (response.ok) {
@@ -48,7 +75,6 @@ document.getElementById("confirmBtn").addEventListener("click", async () => {
                     Vaše přítomnost byla potvrzena!
                 </div>
             `;
-            return;
         } else {
             const data = await response.json();
             alert(`Chyba: ${data.error || "Neznámá chyba"}`);
