@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
     // Zkontrolujte, zda hlavička Authorization existuje a odpovídá očekávané hodnotě
     if (!auth || auth !== expectedAuth) {
-        res.setHeader("WWW-Authenticate", 'Basic realm="Secure Area"'); // Toto je klíčové pro výzvu prohlížeče
+        res.setHeader("WWW-Authenticate", 'Basic realm="Secure Area", charset="UTF-8"');
         return res.status(401).send("Unauthorized");
     }
 
