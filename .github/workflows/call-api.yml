@@ -4,11 +4,11 @@ on:
   schedule:
     # Cron syntax (UTC time):
     # 8:55 CET = 7:55 UTC
-    - cron: '3 8 * * 8'
+    - cron: '5 8 * * 6'
     # 9:00 CET = 8:00 UTC
-    - cron: '5 8 * * 8'
+    - cron: '6 8 * * 6'
     # 9:05 CET = 8:05 UTC
-    - cron: '6 8 * * 8'
+    - cron: '7 8 * * 6'
 
 jobs:
   clear-db:
