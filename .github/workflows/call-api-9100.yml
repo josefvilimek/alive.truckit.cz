@@ -2,8 +2,8 @@ name: Call API for Line 9100
 
 on:
   schedule:
-    - cron: '21 8 * * 6'
-  workflow_dispatch:  # Tento řádek umožňuje manuální spuštění
+    - cron: '15 4 * * 1-5' # 4:15 UTC = 5:15 CET (pondělí až pátek)
+  workflow_dispatch:
 jobs:
   call-api-9100:
     runs-on: ubuntu-latest
