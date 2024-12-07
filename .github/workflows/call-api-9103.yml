@@ -3,7 +3,7 @@ name: Call API for Line 9103
 on:
   schedule:
     - cron: '22 8 * * 6'
-
+  workflow_dispatch:  # Tento řádek umožňuje manuální spuštění
 jobs:
   call-api-9103:
     runs-on: ubuntu-latest
