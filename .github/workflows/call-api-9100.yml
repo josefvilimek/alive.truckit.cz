@@ -1,0 +1,15 @@
+name: Call API for Line 9100
+
+on:
+  schedule:
+    - cron: '21 8 * * 6'
+
+jobs:
+  call-api-9100:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call API for line 9100
+        run: |
+          curl -X GET "https://alive-truckit-cz.vercel.app/api/check-deadlines/9100" \
+          -H "x-api-key: ${{ secrets.API_KEY }}"
