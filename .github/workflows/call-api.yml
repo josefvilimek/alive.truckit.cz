@@ -1,0 +1,42 @@
+name: Scheduled API Calls
+
+on:
+  schedule:
+    # Cron syntax (UTC time):
+    # 8:55 CET = 7:55 UTC
+    - cron: '55 7 * * 1-5'
+    # 9:00 CET = 8:00 UTC
+    - cron: '0 8 * * 1-5'
+    # 9:05 CET = 8:05 UTC
+    - cron: '5 8 * * 1-5'
+
+jobs:
+  clear-db:
+    if: github.event.schedule == '55 7 * * 1-5'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clear Database
+        run: |
+          curl -X DELETE "https://alive-truckit-cz.vercel.app/api/clear-db" \
+          -H "x-api-key: ${{ secrets.API_KEY }}"
+
+  call-api-9100:
+    if: github.event.schedule == '0 8 * * 1-5'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call API for line 9100
+        run: |
+          curl -X GET "https://alive-truckit-cz.vercel.app/api/check-deadlines/9100" \
+          -H "x-api-key: ${{ secrets.API_KEY }}"
+
+  call-api-9103:
+    if: github.event.schedule == '5 8 * * 1-5'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call API for line 9103
+        run: |
+          curl -X GET "https://alive-truckit-cz.vercel.app/api/check-deadlines/9103" \
+          -H "x-api-key: ${{ secrets.API_KEY }}"
