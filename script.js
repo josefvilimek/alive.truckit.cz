@@ -72,7 +72,7 @@ document.getElementById("confirmBtn").addEventListener("click", async () => {
         if (response.ok) {
             document.body.innerHTML = `
                 <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-size: 24px; color: #ffffff;">
-                    Vaše přítomnost byla potvrzena!
+                    Váš výjezd na trasu byl potvrzen!
                 </div>
             `;
         } else {
