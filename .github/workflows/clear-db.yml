@@ -2,7 +2,7 @@ name: Clear Database
 
 on:
   schedule:
-    - cron: '17 8 * * 6' # 55 7 * * 1-5 = 7:55 UTC = 8:55 CET (pondělí až pátek)
+    - cron: '19 8 * * *' # 55 7 * * 1-5 = 7:55 UTC = 8:55 CET (pondělí až pátek)
 
 jobs:
   clear-db:
