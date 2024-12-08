@@ -49,7 +49,7 @@ export default async function handler(req, res) {
                         border: none;
                         border-radius: 4px;
                         cursor: pointer;
-                        width: 100%;
+                        width: 25%;
                     }
                     input[type="submit"]:hover {
                         background-color: #0056b3;
