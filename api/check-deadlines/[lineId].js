@@ -19,7 +19,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Missing lineId in URL" });
     }
 
-    const confirmationTime = await kv.get(`confirmation:${lineId}`);
+    const confirmationTime = await kv.get(`Line:${lineId}`);
 
     if (!confirmationTime) {
         console.log(`Line ${lineId} missed the confirmation! Sending SMS.`);
